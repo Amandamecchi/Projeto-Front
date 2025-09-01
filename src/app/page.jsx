@@ -3,6 +3,12 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
 
 export default function Page() {
     const router = useRouter();
@@ -12,7 +18,7 @@ export default function Page() {
     };
 
     return (
-        <div className="min-h-screen bg-pink-100">   
+        <div className={`min-h-screen bg-pink-100 ${poppins.className}`}>   
             <div className="flex items-center justify-center p-8 pt-16">
                 <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full text-center">
                     <div className="space-y-4">
@@ -52,7 +58,7 @@ export default function Page() {
                             onClick={informacao}
 
                         >
-                            Veja a Api que escolhi
+                            Veja a Api que Escolhi!
                         </button>
                     </div>
                 </div>
