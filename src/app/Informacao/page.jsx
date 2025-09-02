@@ -35,6 +35,54 @@ export default function informacao() {
                     />
                     <h1 className="text-3xl font-bold text-gray-800">Personagens de Harry Potter</h1>
                 </div>
+                     {/* Informações da API */}
+                     <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <div className="space-y-4">
+                        <div>
+                            <h2 className="text-xl font-semibold text-gray-800 mb-2">Nome da API escolhida</h2>
+                            <p className="text-gray-700">Potter DB API</p>
+                        </div>
+                        
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">Link externo para a documentação oficial</h3>
+                            <a href="https://docs.potterdb.com/" target="_blank" className="text-blue-600 hover:text-blue-800 underline">
+                                https://docs.potterdb.com/
+                            </a>
+                        </div>
+                        
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">URL base usada para o axios/fetch</h3>
+                            <p className="text-gray-700 font-mono bg-gray-100 p-2 rounded">https://api.potterdb.com/v1</p>
+                        </div>
+                        
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">Endpoint escolhido para buscar os dados</h3>
+                            <p className="text-gray-700 font-mono bg-gray-100 p-2 rounded">/characters</p>
+                        </div>
+                        
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">Lista de atributos recebidos na resposta da API</h3>
+                            <ul className="text-gray-700 list-disc list-inside space-y-1">
+                                <li>name - Nome do personagem</li>
+                                <li>gender - Gênero do personagem</li>
+                                <li>height - Altura do personagem</li>
+                                <li>house - Casa de Hogwarts</li>
+                                <li>image - URL da imagem do personagem</li>
+                                <li>patronus - Patrono do personagem</li>
+                                <li>species - Espécie do personagem</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">Descrição breve sobre a API</h3>
+                            <p className="text-gray-700">
+                                A Potter DB API é uma API gratuita que fornece informações detalhadas sobre o universo de Harry Potter. 
+                                Ela disponibiliza dados sobre personagens, casas de Hogwarts, feitiços, poções e muito mais. 
+                                É uma fonte completa para desenvolvedores que desejam criar aplicações relacionadas ao mundo mágico criado por J.K. Rowling.
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 <div className="text-center mb-8"> 
                     <div className="mb-6 flex gap-4 justify-center">
                         <button onClick={buscarPersonagem} disabled={loading} className="bg-pink-300 hover:bg-pink-400 text-white font-bold py-4 px-6 rounded">
