@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react";
+import { Pagination } from "antd";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -7,13 +8,14 @@ import { useRouter } from "next/navigation";
 export default function informacao() {
     const [personagens, setPersonagens] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(12);
     const router = useRouter();
 
-    const buscarPersonagem = async () => {
+    const buscarPersonagem = async (page = 1, pageSize = 12) => {
         setLoading(true);
         try {
-            const response = await axios.get('https://api.potterdb.com/v1/characters'); 
-            const data = response.data;
+            const response = await axios.get(`https://api.potterdb.com/v1/characters?page[number]=${page}&page[size]=${pageSize}`);
             setPersonagens(response.data.data);
         } catch (error) {
             console.error('Erro ao buscar personagens:', error);
@@ -84,7 +86,7 @@ export default function informacao() {
                 </div>
                 <div className="text-center mb-8"> 
                     <div className="mb-6 flex gap-4 justify-center">
-                        <button onClick={buscarPersonagem} disabled={loading} className="bg-pink-300 hover:bg-pink-400 text-white font-bold py-4 px-6 rounded">
+                        <button onClick={() => buscarPersonagem(currentPage, pageSize)} disabled={loading} className="bg-pink-300 hover:bg-pink-400 text-white font-bold py-4 px-6 rounded">
                             {loading ? 'Carregando...' : '🔍Buscar Personagem'}
                         </button>
                         <button onClick={() => window.location.href = '/'} className="bg-pink-500 hover:bg-pink-700 text-white font-bold py-4 px-6 rounded">
@@ -121,6 +123,20 @@ export default function informacao() {
                                 </div>
                         </div>
                     ))}
+                </div>
+                <div className="flex justify-center mt-8">
+                    <Pagination
+                        current={currentPage}
+                        pageSize={pageSize}
+                        total={500}
+                        onChange={(page, size) => {
+                            setCurrentPage(page);
+                            setPageSize(size);
+                            buscarPersonagem(page, size);
+                        }}
+                        showSizeChanger
+                        pageSizeOptions={[6, 12, 24, 48]}
+                    />
                 </div>
             </div>
         </div>
