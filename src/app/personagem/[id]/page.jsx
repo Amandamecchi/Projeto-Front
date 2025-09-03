@@ -71,7 +71,6 @@ export default function PersonagemDetalhes() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* Imagem do personagem */}
                         <div className="flex justify-center">
                             {personagem.attributes.image ? (
                                 <img 
@@ -86,7 +85,6 @@ export default function PersonagemDetalhes() {
                             )}
                         </div>
 
-                        {/* Detalhes do personagem */}
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 gap-3">
                                 <div className="bg-gray-50 p-3 rounded">
@@ -140,7 +138,6 @@ export default function PersonagemDetalhes() {
                                 </div>
                             </div>
 
-                            {/* Informações adicionais */}
                             {personagem.attributes.alias_names && personagem.attributes.alias_names.length > 0 && (
                                 <div className="bg-blue-50 p-4 rounded-lg">
                                     <strong className="text-gray-800">Apelidos:</strong>
@@ -176,7 +173,6 @@ export default function PersonagemDetalhes() {
                         </div>
                     </div>
 
-                    {/* Link para Wiki */}
                     {personagem.attributes.wiki && (
                         <div className="mt-8 text-center">
                             <a 
