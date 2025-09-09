@@ -38,13 +38,6 @@ export default function informacao() {
         <div className="min-h-screen bg-white p-8">
             <div className="max-w-4xl mx-auto">
                 <div className="flex items-center justify-center gap-4 mb-8">
-                    <Image 
-                        src="/image/plataformaa.png" 
-                        alt="Plataforma 9¾" 
-                        width={80}
-                        height={80}
-                        className="rounded"
-                    />
                     <h1 className="text-3xl font-bold text-gray-800">Personagens de Harry Potter</h1>
                 </div>
                      <div className="bg-gradient-to-br from-pink-200 via-white to-pink-100 p-8 rounded-2xl shadow-xl border-2 border-pink-300 mb-10">

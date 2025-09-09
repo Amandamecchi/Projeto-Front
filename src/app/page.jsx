@@ -19,7 +19,7 @@ export default function Page() {
 
     return (
         <div className={`min-h-screen bg-white ${poppins.className}`}>   
-            <div className="flex items-center justify-center p-8 pt-16">
+            <div className="flex items-center justify-center p-8 pt-30">
                 <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full text-center">
                     <div className="space-y-4">
                         <Image 
