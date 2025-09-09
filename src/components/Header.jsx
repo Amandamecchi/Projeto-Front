@@ -21,7 +21,7 @@ export default function Header() {
                             <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-400 via-pink-300 to-rose-400 bg-clip-text text-transparent drop-shadow-lg">
                                 Hogwarts API
                             </h1>
-                            <p className="text-pink-200 text-sm italic">Discubra a Mágia</p>
+                            <p className="text-pink-200 text-sm italic">Descubra a Mágia</p>
                         </div>
                     </div>
                     <nav className="bg-black/20 backdrop-blur-sm rounded-full px-6 py-3 border border-pink-400/30">
@@ -35,7 +35,7 @@ export default function Header() {
                             <li>
                                 <Link href="/informacao" className="text-pink-300 hover:text-pink-100 font-semibold text-lg transition-all duration-300 hover:scale-110 flex items-center space-x-2">
                                     <span>⚡</span>
-                                    <span>Personagens</span>
+                                    <span>Detalhes API</span>
                                 </Link>
                             </li>
                         </ul>
