@@ -42,14 +42,14 @@ export default function PersonagemDetalhes() {
 
     if (!personagem) {
         return (
-            <div className="min-h-screen bg-pink-100 flex items-center justify-center">
+            <div className="min-h-screen bg-pink-200 flex items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-gray-800 mb-4">Personagem não encontrado</h1>
                     <button 
                         onClick={() => router.push('/informacao')}
                         className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded"
                     >
-                        Voltar
+                        Voltar para a lista
                     </button>
                 </div>
             </div>
