@@ -1,4 +1,4 @@
-
+import Image from 'next/image';
 export default function NotFound() {
   return (
     <div style={{
@@ -9,12 +9,17 @@ export default function NotFound() {
       alignItems: "center",
       textAlign: "center"
     }}>
-      <h1 style={{ margin: "32px 0" }}>Página não Encontrada</h1>  
-      <p style={{ fontSize: "18px", color: "#666" }}>
-        Desculpe, a página que você está procurando não existe.
-      </p>   
+                              <Image 
+                                  src="/image/chapeu.jpg" 
+                                  alt="Chapéu Seletor" 
+                                  width={300}
+                                  height={300}
+                              />
       <p style={{ fontSize: "90px", color: "black", fontWeight: "bold", margin: "20px 0" }}>
         404
+      </p>   
+      <p style={{ fontSize: "18px", color: "#080808ff" }}>
+        Desculpe, a página que você está procurando não existe.
       </p>   
       <a 
         href="/" 

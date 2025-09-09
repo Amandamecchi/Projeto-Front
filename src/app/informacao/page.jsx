@@ -4,6 +4,7 @@ import { Pagination } from "antd";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 export default function informacao() {
     const [personagens, setPersonagens] = useState([]);
@@ -13,6 +14,15 @@ export default function informacao() {
     const router = useRouter();
 
     const buscarPersonagem = async (page = 1, pageSize = 12) => {
+        toast.success('Veja os personagens! 🧙‍♂️', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+        });
+        
         setLoading(true);
         try {
             const response = await axios.get(`https://api.potterdb.com/v1/characters?page[number]=${page}&page[size]=${pageSize}`);
@@ -25,7 +35,7 @@ export default function informacao() {
     }
 
     return (
-        <div className="min-h-screen bg-pink-100 p-8">
+        <div className="min-h-screen bg-white p-8">
             <div className="max-w-4xl mx-auto">
                 <div className="flex items-center justify-center gap-4 mb-8">
                     <Image 

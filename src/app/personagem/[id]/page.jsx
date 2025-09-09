@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import Image from "next/image";
+import Footer from "../../../components/Footer";
 
 export default function PersonagemDetalhes() {
     const [personagem, setPersonagem] = useState(null);
@@ -187,6 +188,7 @@ export default function PersonagemDetalhes() {
                     )}
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }
