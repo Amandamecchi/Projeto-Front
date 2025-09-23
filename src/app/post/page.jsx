@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './post.module.css';
 
@@ -7,8 +7,45 @@ export default function Post() {
     const [loading, setLoading] = useState(false);
     const [addedComment, setAddedComment] = useState([]);
     const [form, setForm] = useState({ name: '', email: '', comment: '' });
-
     const [error, setError] = useState(false);
+
+    // Carregar comentários do sessionStorage ao montar o componente
+    useEffect(() => {
+        const savedComments = sessionStorage.getItem('comments');
+        if (savedComments) {
+            try {
+                setAddedComment(JSON.parse(savedComments));
+            } catch (error) {
+                console.error('Erro ao carregar comentários do sessionStorage:', error);
+                sessionStorage.removeItem('comments');
+            }
+        }
+
+        // Carregar dados do formulário do sessionStorage
+        const savedForm = sessionStorage.getItem('formData');
+        if (savedForm) {
+            try {
+                setForm(JSON.parse(savedForm));
+            } catch (error) {
+                console.error('Erro ao carregar dados do formulário:', error);
+                sessionStorage.removeItem('formData');
+            }
+        }
+    }, []);
+
+    // Salvar comentários no sessionStorage sempre que addedComment mudar
+    useEffect(() => {
+        if (addedComment.length > 0) {
+            sessionStorage.setItem('comments', JSON.stringify(addedComment));
+        } else {
+            sessionStorage.removeItem('comments');
+        }
+    }, [addedComment]);
+
+    // Salvar dados do formulário no sessionStorage sempre que form mudar
+    useEffect(() => {
+        sessionStorage.setItem('formData', JSON.stringify(form));
+    }, [form]);
 
     const CriarNovoComentario = async () => {
         setLoading(true);
@@ -19,8 +56,14 @@ export default function Post() {
                 email: form.email.trim(),
                 body: form.comment.trim(),
             });
-            setAddedComment([...addedComment, response.data]);
-            setForm({ name: '', email: '', comment: '' });
+            
+            const newComments = [...addedComment, response.data];
+            setAddedComment(newComments);
+            
+            const clearedForm = { name: '', email: '', comment: '' };
+            setForm(clearedForm);
+            sessionStorage.setItem('formData', JSON.stringify(clearedForm));
+            
         } catch (error) {
             setError(true);
             console.error("erro ao criar comentário", error);
@@ -29,9 +72,28 @@ export default function Post() {
         }
     };
 
+    // Função para deletar comentário individual
+    const deletarComentario = (commentId) => {
+        const updatedComments = addedComment.filter(comment => comment.id !== commentId);
+        setAddedComment(updatedComments);
+        
+        if (updatedComments.length === 0) {
+            sessionStorage.removeItem('comments');
+        } else {
+            sessionStorage.setItem('comments', JSON.stringify(updatedComments));
+        }
+    };
+
     const atualizarForm = (e) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
+    };
+
+    const limparDados = () => {
+        setAddedComment([]);
+        setForm({ name: '', email: '', comment: '' });
+        sessionStorage.removeItem('comments');
+        sessionStorage.removeItem('formData');
     };
 
     return (
@@ -79,21 +141,33 @@ export default function Post() {
                             />
                         </div>
 
-                        <button 
-                            type="button"
-                            onClick={CriarNovoComentario} 
-                            disabled={!form.name.trim() || loading}
-                            className={styles.button}
-                        >
-                            {loading ? (
-                                <span className={styles.loading}>
-                                    <span className={styles.spinner}></span>
-                                    Enviando...
-                                </span>
-                            ) : (
-                                'Enviar Comentário'
+                        <div className={styles.buttonGroup}>
+                            <button 
+                                type="button"
+                                onClick={CriarNovoComentario} 
+                                disabled={!form.name.trim() || loading}
+                                className={styles.button}
+                            >
+                                {loading ? (
+                                    <span className={styles.loading}>
+                                        <span className={styles.spinner}></span>
+                                        Enviando...
+                                    </span>
+                                ) : (
+                                    'Enviar Comentário'
+                                )}
+                            </button>
+
+                            {addedComment.length > 0 && (
+                                <button 
+                                    type="button"
+                                    onClick={limparDados}
+                                    className={styles.clearButton}
+                                >
+                                    Limpar Todos
+                                </button>
                             )}
-                        </button>
+                        </div>
                     </form>
 
                     {error && (
@@ -119,7 +193,16 @@ export default function Post() {
                                 <div key={comment.id || index} className={styles.commentCard}>
                                     <div className={styles.commentHeader}>
                                         <div className={styles.commentName}>{comment.name}</div>
-                                        <div className={styles.commentId}>ID: {comment.id}</div>
+                                        <div className={styles.commentActions}>
+                                            <div className={styles.commentId}>ID: {comment.id}</div>
+                                            <button 
+                                                onClick={() => deletarComentario(comment.id)}
+                                                className={styles.deleteButton}
+                                                title="Deletar comentário"
+                                            >
+                                                🗑️
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className={styles.commentEmail}>{comment.email}</div>
                                     <div className={styles.commentBody}>{comment.body}</div>
