@@ -15,6 +15,7 @@ export default function informacao() {
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [isSearchMode, setIsSearchMode] = useState(false);
+    const [showPersonagens, setShowPersonagens] = useState(false);
     const router = useRouter();
 
     const buscarPersonagem = async (page = 1, pageSize = 12) => {
@@ -31,6 +32,7 @@ export default function informacao() {
         try {
             const response = await axios.get(`https://api.potterdb.com/v1/characters?page[number]=${page}&page[size]=${pageSize}`);
             setPersonagens(response.data.data);
+            setShowPersonagens(true);
         } catch (error) {
             console.error('Erro ao buscar personagens:', error);
         } finally {
@@ -45,6 +47,7 @@ export default function informacao() {
             try {
                 const response = await axios.get(`https://api.potterdb.com/v1/characters?filter[name_cont]=${encodeURIComponent(searchTerm)}`);
                 setSearchResults(response.data.data || []);
+                setShowPersonagens(true);
                 toast.success(`Encontrados ${response.data.data.length} personagens! 🔍`, {
                     position: "top-right",
                     autoClose: 3000,
@@ -74,6 +77,10 @@ export default function informacao() {
         setSearchTerm("");
         setSearchResults([]);
         setIsSearchMode(false);
+    };
+
+    const voltarAoTopo = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     return (
@@ -139,7 +146,6 @@ export default function informacao() {
                         </button>
                     </div>
 
-                    {/* Barra de Pesquisa */}
                     <div className="max-w-2xl mx-auto mb-6">
                         <div className="bg-white rounded-lg shadow-md p-4 border border-pink-200">
                             <h3 className="text-lg font-semibold text-gray-800 mb-3">🔍 Pesquisar Personagem</h3>
@@ -180,50 +186,64 @@ export default function informacao() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {(isSearchMode ? searchResults : personagens).map((personagem) => (
-                        <div key={personagem.id} className="bg-white p-6 rounded-lg shadow-md">
-                                <div className="flex flex-col h-full justify-between">
-                                    <div>
-                                        <h2 className="text-xl font-bold mb-2">{personagem.attributes.name}</h2>
-                                        <p className="text-gray-700 mb-1"><strong>Gender:</strong> {personagem.attributes.gender || 'N/A'}</p>
-                                        <p className="text-gray-700 mb-1"><strong>Height:</strong> {personagem.attributes.height || 'N/A'}</p>
-                                        <p className="text-gray-700 mb-1"><strong>House:</strong> {personagem.attributes.house || 'N/A'}</p>
-                                        {personagem.attributes.image && (
-                                            <div className="mb-2">
-                                                <img src={personagem.attributes.image} alt={personagem.attributes.name} className="w-full h-32 object-cover rounded" />
+                {showPersonagens && (
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {(isSearchMode ? searchResults : personagens).map((personagem) => (
+                                <div key={personagem.id} className="bg-white p-6 rounded-lg shadow-md">
+                                        <div className="flex flex-col h-full justify-between">
+                                            <div>
+                                                <h2 className="text-xl font-bold mb-2">{personagem.attributes.name}</h2>
+                                                <p className="text-gray-700 mb-1"><strong>Gender:</strong> {personagem.attributes.gender || 'N/A'}</p>
+                                                <p className="text-gray-700 mb-1"><strong>Height:</strong> {personagem.attributes.height || 'N/A'}</p>
+                                                <p className="text-gray-700 mb-1"><strong>House:</strong> {personagem.attributes.house || 'N/A'}</p>
+                                                {personagem.attributes.image && (
+                                                    <div className="mb-2">
+                                                        <img src={personagem.attributes.image} alt={personagem.attributes.name} className="w-full h-32 object-cover rounded" />
+                                                    </div>
+                                                )}
+                                                <p className="text-gray-700 mb-1"><strong>Patronus:</strong> {personagem.attributes.patronus || 'N/A'}</p>
+                                                <p className="text-gray-700 mb-1"><strong>Species:</strong> {personagem.attributes.species || 'N/A'}</p>
                                             </div>
-                                        )}
-                                        <p className="text-gray-700 mb-1"><strong>Patronus:</strong> {personagem.attributes.patronus || 'N/A'}</p>
-                                        <p className="text-gray-700 mb-1"><strong>Species:</strong> {personagem.attributes.species || 'N/A'}</p>
-                                    </div>
-                                    <div className="mt-4 flex justify-center items-end">
-                                        <button 
-                                            onClick={() => router.push(`/personagem/${personagem.id}`)}
-                                            className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                                        >
-                                            📋 Detalhes
-                                        </button>
-                                    </div>
+                                            <div className="mt-4 flex justify-center items-end">
+                                                <button 
+                                                    onClick={() => router.push(`/personagem/${personagem.id}`)}
+                                                    className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                                                >
+                                                    📋 Detalhes
+                                                </button>
+                                            </div>
+                                        </div>
                                 </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-                {!isSearchMode && (
-                    <div className="flex justify-center mt-8">
-                        <Pagination
-                            current={currentPage}
-                            pageSize={pageSize}
-                            total={500}
-                            onChange={(page, size) => {
-                                setCurrentPage(page);
-                                setPageSize(size);
-                                buscarPersonagem(page, size);
-                            }}
-                            showSizeChanger
-                            pageSizeOptions={[6, 12, 24, 48]}
-                        />
-                    </div>
+
+                        <div className="flex justify-center mt-8">
+                            <button
+                                onClick={voltarAoTopo}
+                                className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg"
+                            >
+                                ⬆ Voltar ao Topo
+                            </button>
+                        </div>
+
+                        {!isSearchMode && (
+                            <div className="flex justify-center mt-8">
+                                <Pagination
+                                    current={currentPage}
+                                    pageSize={pageSize}
+                                    total={500}
+                                    onChange={(page, size) => {
+                                        setCurrentPage(page);
+                                        setPageSize(size);
+                                        buscarPersonagem(page, size);
+                                    }}
+                                    showSizeChanger
+                                    pageSizeOptions={[6, 12, 24, 48]}
+                                />
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>

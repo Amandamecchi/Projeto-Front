@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import styles from './post.module.css';
 
 export default function Post() {
@@ -8,6 +9,7 @@ export default function Post() {
     const [addedComment, setAddedComment] = useState([]);
     const [form, setForm] = useState({ name: '', email: '', comment: '' });
     const [error, setError] = useState(false);
+    const router = useRouter();
 
     // Carregar comentários do sessionStorage ao montar o componente
     useEffect(() => {
@@ -72,7 +74,6 @@ export default function Post() {
         }
     };
 
-    // Função para deletar comentário individual
     const deletarComentario = (commentId) => {
         const updatedComments = addedComment.filter(comment => comment.id !== commentId);
         setAddedComment(updatedComments);
@@ -82,6 +83,10 @@ export default function Post() {
         } else {
             sessionStorage.setItem('comments', JSON.stringify(updatedComments));
         }
+    };
+
+    const voltarParaHome = () => {
+        router.push('/');
     };
 
     const atualizarForm = (e) => {
@@ -101,6 +106,12 @@ export default function Post() {
             <div className={styles.wrapper}>
                 <div className={styles.header}>
                     <h1 className={styles.title}>Criar Comentário</h1>
+                    <button 
+                        onClick={voltarParaHome}
+                        className={`${styles.backButton} ${styles.styledButton}`}
+                    >
+                        🏠 Voltar para Home
+                    </button>
                 </div>
 
                 <div className={styles.formSection}>
@@ -146,7 +157,7 @@ export default function Post() {
                                 type="button"
                                 onClick={CriarNovoComentario} 
                                 disabled={!form.name.trim() || loading}
-                                className={styles.button}
+                                className={`${styles.button} ${styles.styledButton}`}
                             >
                                 {loading ? (
                                     <span className={styles.loading}>
@@ -162,7 +173,7 @@ export default function Post() {
                                 <button 
                                     type="button"
                                     onClick={limparDados}
-                                    className={styles.clearButton}
+                                    className={`${styles.clearButton} ${styles.styledButton}`}
                                 >
                                     Limpar Todos
                                 </button>
@@ -197,7 +208,7 @@ export default function Post() {
                                             <div className={styles.commentId}>ID: {comment.id}</div>
                                             <button 
                                                 onClick={() => deletarComentario(comment.id)}
-                                                className={styles.deleteButton}
+                                                className={`${styles.deleteButton} ${styles.styledButton}`}
                                                 title="Deletar comentário"
                                             >
                                                 🗑️
