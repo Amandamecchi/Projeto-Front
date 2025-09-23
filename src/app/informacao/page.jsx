@@ -11,6 +11,10 @@ export default function informacao() {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(12);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [isSearchMode, setIsSearchMode] = useState(false);
     const router = useRouter();
 
     const buscarPersonagem = async (page = 1, pageSize = 12) => {
@@ -33,6 +37,44 @@ export default function informacao() {
             setLoading(false);
         }
     }
+
+    const handleSearch = async () => {
+        if (searchTerm.trim()) {
+            setIsSearching(true);
+            setIsSearchMode(true);
+            try {
+                const response = await axios.get(`https://api.potterdb.com/v1/characters?filter[name_cont]=${encodeURIComponent(searchTerm)}`);
+                setSearchResults(response.data.data || []);
+                toast.success(`Encontrados ${response.data.data.length} personagens! 🔍`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+            } catch (error) {
+                console.error('Erro ao buscar personagens:', error);
+                setSearchResults([]);
+                toast.error('Erro ao buscar personagens!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+            } finally {
+                setIsSearching(false);
+            }
+        }
+    };
+
+    const clearSearch = () => {
+        setSearchTerm("");
+        setSearchResults([]);
+        setIsSearchMode(false);
+    };
 
     return (
         <div className="min-h-screen bg-white p-8">
@@ -96,10 +138,50 @@ export default function informacao() {
                             🏠 Voltar para Home
                         </button>
                     </div>
+
+                    {/* Barra de Pesquisa */}
+                    <div className="max-w-2xl mx-auto mb-6">
+                        <div className="bg-white rounded-lg shadow-md p-4 border border-pink-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-3">🔍 Pesquisar Personagem</h3>
+                            <div className="flex gap-3">
+                                <input
+                                    type="text"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    placeholder="Digite o nome do personagem..."
+                                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                                />
+                                <button
+                                    onClick={handleSearch}
+                                    disabled={isSearching || !searchTerm.trim()}
+                                    className="bg-pink-500 hover:bg-pink-600 disabled:bg-gray-400 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
+                                >
+                                    {isSearching ? 'Buscando...' : 'Buscar'}
+                                </button>
+                                {isSearchMode && (
+                                    <button
+                                        onClick={clearSearch}
+                                        className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                                    >
+                                        Limpar
+                                    </button>
+                                )}
+                            </div>
+                            {isSearchMode && (
+                                <p className="text-sm text-gray-600 mt-2">
+                                    {searchResults.length > 0 
+                                        ? `Mostrando ${searchResults.length} resultado(s) para "${searchTerm}"`
+                                        : `Nenhum resultado encontrado para "${searchTerm}"`
+                                    }
+                                </p>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {personagens.map((personagem) => (
+                    {(isSearchMode ? searchResults : personagens).map((personagem) => (
                         <div key={personagem.id} className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex flex-col h-full justify-between">
                                     <div>
@@ -127,20 +209,22 @@ export default function informacao() {
                         </div>
                     ))}
                 </div>
-                <div className="flex justify-center mt-8">
-                    <Pagination
-                        current={currentPage}
-                        pageSize={pageSize}
-                        total={500}
-                        onChange={(page, size) => {
-                            setCurrentPage(page);
-                            setPageSize(size);
-                            buscarPersonagem(page, size);
-                        }}
-                        showSizeChanger
-                        pageSizeOptions={[6, 12, 24, 48]}
-                    />
-                </div>
+                {!isSearchMode && (
+                    <div className="flex justify-center mt-8">
+                        <Pagination
+                            current={currentPage}
+                            pageSize={pageSize}
+                            total={500}
+                            onChange={(page, size) => {
+                                setCurrentPage(page);
+                                setPageSize(size);
+                                buscarPersonagem(page, size);
+                            }}
+                            showSizeChanger
+                            pageSizeOptions={[6, 12, 24, 48]}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );
