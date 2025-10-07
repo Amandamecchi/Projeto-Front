@@ -11,7 +11,6 @@ export default function Post() {
     const [error, setError] = useState(false);
     const router = useRouter();
 
-    // Carregar comentários do sessionStorage ao montar o componente
     useEffect(() => {
         const savedComments = sessionStorage.getItem('comments');
         if (savedComments) {
@@ -23,7 +22,6 @@ export default function Post() {
             }
         }
 
-        // Carregar dados do formulário do sessionStorage
         const savedForm = sessionStorage.getItem('formData');
         if (savedForm) {
             try {
@@ -35,7 +33,6 @@ export default function Post() {
         }
     }, []);
 
-    // Salvar comentários no sessionStorage sempre que addedComment mudar
     useEffect(() => {
         if (addedComment.length > 0) {
             sessionStorage.setItem('comments', JSON.stringify(addedComment));
@@ -44,7 +41,6 @@ export default function Post() {
         }
     }, [addedComment]);
 
-    // Salvar dados do formulário no sessionStorage sempre que form mudar
     useEffect(() => {
         sessionStorage.setItem('formData', JSON.stringify(form));
     }, [form]);
